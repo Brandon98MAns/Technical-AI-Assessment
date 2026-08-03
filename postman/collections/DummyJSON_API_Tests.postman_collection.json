@@ -1,0 +1,129 @@
+{
+  "info": {
+    "_postman_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "name": "DummyJSON API Tests",
+    "description": "API test suite for the DummyJSON assessment. Quality standard: positive tests validate status, response time, Content-Type, required fields, data types, and schema when appropriate; negative tests validate status, error structure, stable error messages, and no unintended side effects.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const responseTimeLimit = Number(pm.environment.get('responseTimeLimit'));",
+          "",
+          "pm.test('API responds within the accepted time limit', function () {",
+          "    pm.expect(responseTimeLimit, 'responseTimeLimit must be a number').to.be.a('number').and.above(0);",
+          "    pm.expect(pm.response.responseTime).to.be.below(responseTimeLimit);",
+          "});",
+          "",
+          "pm.test('API returns a JSON response', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Authentication",
+      "item": [
+        {
+          "name": "POST Login - Valid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "const loginSuccessSchema = {",
+                  "    type: 'object',",
+                  "    required: [",
+                  "        'id',",
+                  "        'username',",
+                  "        'email',",
+                  "        'firstName',",
+                  "        'lastName',",
+                  "        'gender',",
+                  "        'image',",
+                  "        'accessToken',",
+                  "        'refreshToken'",
+                  "    ],",
+                  "    properties: {",
+                  "        id: { type: 'number' },",
+                  "        username: { type: 'string', minLength: 1 },",
+                  "        email: { type: 'string', minLength: 1 },",
+                  "        firstName: { type: 'string', minLength: 1 },",
+                  "        lastName: { type: 'string', minLength: 1 },",
+                  "        gender: { type: 'string', minLength: 1 },",
+                  "        image: { type: 'string', minLength: 1 },",
+                  "        accessToken: { type: 'string', minLength: 1 },",
+                  "        refreshToken: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('User is authenticated successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Login returns a complete authentication payload', function () {",
+                  "    pm.response.to.have.jsonSchema(loginSuccessSchema);",
+                  "});",
+                  "",
+                  "if (",
+                  "    pm.response.code === 200 &&",
+                  "    typeof response.accessToken === 'string' &&",
+                  "    typeof response.refreshToken === 'string' &&",
+                  "    typeof response.id === 'number'",
+                  ") {",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.environment.set('refreshToken', response.refreshToken);",
+                  "    pm.environment.set('authUserId', String(response.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{authUsername}}\",\n  \"password\": \"{{authPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates with demo credentials and persists accessToken, refreshToken, and authUserId only when login succeeds."
+          },
+          "response": []
+        }
+      ],
+      "description": "Authentication flows for DummyJSON. Token refresh scenarios are out of scope."
+    }
+  ]
+}

@@ -61,16 +61,25 @@ Define how API quality will be validated for the DummyJSON public API using Post
 
 ## 7. Quality standard
 
-Minimum checks for every request under test:
+Every API test in this project follows the same minimum bar.
 
-| Outcome | Minimum validations |
-|---------|---------------------|
-| Positive (2xx) | Expected status code; JSON content type; critical fields present with expected types; no unexpected empty token/ID when the flow must persist state |
-| Negative (4xx) | Expected error status; response remains parseable when a body is returned; successful auth state is not overwritten by failed requests |
+**Positive requests** validate, whenever applicable:
 
-Shared checks (collection-level where applicable): response time within an agreed limit; JSON content type for JSON responses.
+- HTTP status
+- Response time (via `{{responseTimeLimit}}`)
+- Content-Type
+- Required response fields
+- Data types
+- Response schema (when appropriate)
 
-Request-level scripts own business-specific assertions only.
+**Negative requests** validate:
+
+- Expected HTTP status
+- Error response structure
+- Error message (when stable)
+- No unintended side effects (for example, environment variables must not be overwritten after failed authentication)
+
+Shared checks live at collection level when they apply broadly. Request-level scripts own case-specific assertions and state updates only.
 
 ## 8. Suite organization
 
