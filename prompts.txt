@@ -254,6 +254,28 @@ Do not modify Authentication or Products Read.
 
 ================================================================================
 
+## Prompt 9
+
+Objective
+
+Align the assessment with the current DummyJSON API behavior.
+
+Prompt
+
+Treat this as a maintenance Pull Request.
+
+Verify the observed response for POST /products/add and update the affected assertions to match the current API contract.
+
+Update the documentation only if necessary.
+
+Keep the change minimal.
+
+Outcome
+
+- Updated Product Create assertions to match the current HTTP 201 response.
+- Kept the rest of the suite unchanged.
+- Aligned documentation with the current DummyJSON behavior.
+
 ## Collaboration Summary
 
 AI was used as an engineering assistant throughout this assessment.

@@ -799,7 +799,7 @@
                   "};",
                   "",
                   "pm.test('Product create simulation completes successfully', function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(201);",
                   "});",
                   "",
                   "pm.test('Create response returns the submitted product fields', function () {",

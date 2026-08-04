@@ -136,6 +136,7 @@ Examples:
 
 - Invalid authentication tokens currently return **HTTP 500** with the message `invalid token`.
 - Product **POST**, **PUT** and **DELETE** operations are simulated and do not persist server-side changes.
+- `POST /products/add` currently returns **HTTP 201**; the suite follows that contract.
 
 The test suite validates the documented and observed API behavior rather than theoretical REST expectations.
 

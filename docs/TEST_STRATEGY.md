@@ -145,3 +145,5 @@ Example: `GET Current User - Invalid Token` currently returns HTTP `500` with me
 `GET Product - Nonexistent Id` currently returns HTTP `404` with a `not found` message. Assertions intentionally follow the observed API contract.
 
 Product write operations (`POST`, `PUT`, and `DELETE`) are simulated and do not persist server-side. The suite validates the write response contract only and does not use follow-up `GET` requests to verify persistence.
+
+`POST Product - Create` (`POST /products/add`) currently returns HTTP `201`. Assertions follow the current DummyJSON contract.
