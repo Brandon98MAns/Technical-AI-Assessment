@@ -1,26 +1,30 @@
 # AI Collaboration Log
 
-This document records how AI was used throughout the assessment.
+This document records how AI was used throughout this assessment.
 
-The objective was not to generate the solution automatically, but to accelerate repetitive tasks while keeping all architectural and testing decisions under human review.
+The objective was not to generate the solution automatically, but to accelerate repetitive tasks while keeping architectural decisions, implementation details, and testing strategy under human review throughout the assessment.
+
+The workflow intentionally followed an iterative engineering process:
+
+Architecture → Review → Implementation → Pull Request Review → Commit
 
 ================================================================================
 
 ## Prompt 1
 
-Objective
+### Objective
 
 Define the initial architecture of the project before implementation.
 
-Prompt
+### Prompt
 
 Design a maintainable Postman project structure for the DummyJSON API assessment.
 
-Focus on repository organization, scalability, documentation and reviewer readability.
+Focus on repository organization, scalability, documentation, and reviewer readability.
 
 Do not generate implementation yet.
 
-Outcome
+### Outcome
 
 - Proposed repository structure
 - Proposed Postman asset organization
@@ -30,11 +34,11 @@ Outcome
 
 ## Prompt 2
 
-Objective
+### Objective
 
 Create the approved project structure.
 
-Prompt
+### Prompt
 
 Create the agreed folder structure.
 
@@ -42,21 +46,22 @@ Generate only the project skeleton and the initial TEST_STRATEGY.md document.
 
 Do not generate requests or collections yet.
 
-Outcome
+### Outcome
 
-- Created docs/
-- Created postman/
-- Created TEST_STRATEGY.md
+- Created repository structure
+- Created `docs/`
+- Created `postman/`
+- Created `TEST_STRATEGY.md`
 
 ================================================================================
 
 ## Prompt 3
 
-Objective
+### Objective
 
 Design the Postman collection architecture.
 
-Prompt
+### Prompt
 
 Before implementing Authentication, propose:
 
@@ -69,10 +74,11 @@ Before implementing Authentication, propose:
 
 Do not implement requests yet.
 
-Outcome
+### Outcome
 
 - Defined collection architecture
 - Defined environment variables
+- Defined runtime variables
 - Defined authentication flow
 - Defined naming conventions
 - Defined script organization
@@ -81,15 +87,15 @@ Outcome
 
 ## Prompt 4
 
-Objective
+### Objective
 
-Implement the first authentication scenario.
+Implement the first Authentication scenario.
 
-Prompt
+### Prompt
 
 Implement only:
 
-POST Login - Valid Credentials
+- POST Login - Valid Credentials
 
 Requirements:
 
@@ -98,9 +104,9 @@ Requirements:
 - Reuse collection-level validations
 - Follow the previously approved quality standard
 
-Do not implement any additional scenarios.
+Do not implement additional scenarios.
 
-Outcome
+### Outcome
 
 - Created Postman Collection
 - Created Local Environment
@@ -111,11 +117,11 @@ Outcome
 
 ## Prompt 5
 
-Objective
+### Objective
 
-Review and refine the authentication implementation.
+Review and refine the initial Authentication implementation.
 
-Prompt
+### Prompt
 
 Perform a Senior QA pull request review.
 
@@ -128,22 +134,22 @@ Improve maintainability by:
 
 Do not introduce new scenarios.
 
-Outcome
+### Outcome
 
 - Simplified assertions
 - Improved maintainability
-- Moved environment persistence outside test assertions
+- Separated environment persistence from assertions
 - Tightened JSON schema validation
 
 ================================================================================
 
 ## Prompt 6
 
-Objective
+### Objective
 
 Complete the Authentication module.
 
-Prompt
+### Prompt
 
 Implement:
 
@@ -158,10 +164,113 @@ Reuse the existing architecture and quality standards.
 
 Treat this implementation as a single Pull Request.
 
-Outcome
+### Outcome
 
-- Completed the Authentication module.
-- Implemented authenticated user validation.
-- Added authentication negative scenarios.
-- Ensured failed authentication never overwrites session variables.
-- Reused folder-level Bearer authentication for protected endpoints.
+- Completed the Authentication module
+- Added authenticated user validation
+- Implemented authentication negative scenarios
+- Ensured failed authentication never overwrites session variables
+- Reused Bearer authentication for protected endpoints
+
+================================================================================
+
+## Prompt 7
+
+### Objective
+
+Implement the Products Read module.
+
+### Prompt
+
+Treat this as a new Pull Request.
+
+Implement only PR 1 of the approved Products module.
+
+Scope:
+
+- GET Products - Default List
+- GET Product - Existing Id
+- GET Products - Search
+- GET Product - Nonexistent Id
+
+Requirements:
+
+- Follow the existing architecture and naming conventions
+- Reuse collection-level quality checks
+- Use lightweight schemas with `additionalProperties: true`
+- Store `productId` only after a successful list response
+- Never overwrite `productId` after failed requests
+- Do not introduce authentication for Products
+- Avoid brittle assertions
+
+Do not implement write scenarios.
+
+### Outcome
+
+- Implemented Products Read scenarios
+- Added product chaining through `productId`
+- Implemented search scenario
+- Implemented Product Not Found scenario
+- Preserved environment integrity on failed requests
+
+================================================================================
+
+## Prompt 8
+
+### Objective
+
+Implement the Products Write module.
+
+### Prompt
+
+Treat this as a new Pull Request.
+
+Implement only PR 2 of the approved Products module.
+
+Scope:
+
+- POST Product - Create
+- PUT Product - Update
+- DELETE Product - Existing Id
+
+Requirements:
+
+- Follow the existing architecture
+- Reuse collection-level validations
+- Treat writes as simulated operations
+- Do not validate persistence through follow-up GET requests
+- Do not overwrite `productId`
+- Keep assertions focused on stable response fields
+
+Do not modify Authentication or Products Read.
+
+### Outcome
+
+- Implemented Product Create
+- Implemented Product Update
+- Implemented Product Delete
+- Preserved `productId`
+- Avoided persistence assumptions for simulated operations
+
+================================================================================
+
+## Collaboration Summary
+
+AI was used as an engineering assistant throughout this assessment.
+
+Its primary role was to:
+
+- Propose implementation plans
+- Generate initial implementation drafts
+- Accelerate repetitive work
+- Review maintainability
+- Simulate Pull Request reviews
+- Challenge architectural decisions before implementation
+
+All architectural decisions, testing strategy, implementation approvals, scope reductions, and final changes were manually reviewed before being committed.
+
+Every feature followed the same workflow:
+
+**Architecture → Review → Implementation → Pull Request Review → Commit**
+
+The final solution reflects human technical decisions supported by AI-assisted collaboration rather than AI-generated code accepted without validation.

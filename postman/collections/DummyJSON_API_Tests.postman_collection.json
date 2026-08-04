@@ -542,7 +542,7 @@
     },
     {
       "name": "02 - Products",
-      "description": "Products read scenarios (PR 1). No authentication required. Write scenarios are out of scope for this PR.",
+      "description": "Products read and simulated write scenarios. No authentication required. POST/PUT/DELETE do not persist on DummyJSON.",
       "item": [
         {
           "name": "GET Products - Default List",
@@ -773,6 +773,201 @@
               ]
             },
             "description": "Requests a product id that does not exist. Must not overwrite productId."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Product - Create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousProductId = pm.environment.get('productId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const createdProductSchema = {",
+                  "    type: 'object',",
+                  "    required: ['id', 'title', 'price'],",
+                  "    properties: {",
+                  "        id: { type: 'number' },",
+                  "        title: { type: 'string', minLength: 1 },",
+                  "        price: { type: 'number' }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Product create simulation completes successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Create response returns the submitted product fields', function () {",
+                  "    pm.response.to.have.jsonSchema(createdProductSchema);",
+                  "    pm.expect(response.title).to.eql('QA Assessment Pencil');",
+                  "    pm.expect(response.price).to.eql(9.99);",
+                  "});",
+                  "",
+                  "pm.test('Simulated create does not change stored productId', function () {",
+                  "    pm.expect(pm.environment.get('productId')).to.eql(previousProductId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"QA Assessment Pencil\",\n  \"price\": 9.99\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "add"
+              ]
+            },
+            "description": "Simulates product creation. DummyJSON does not persist the new product; productId is intentionally left unchanged."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT Product - Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousProductId = pm.environment.get('productId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const updatedProductSchema = {",
+                  "    type: 'object',",
+                  "    required: ['id', 'title'],",
+                  "    properties: {",
+                  "        id: { type: 'number' },",
+                  "        title: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Product update simulation completes successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Update response reflects the modified title for the same product id', function () {",
+                  "    pm.response.to.have.jsonSchema(updatedProductSchema);",
+                  "    pm.expect(String(response.id)).to.eql(previousProductId);",
+                  "    pm.expect(response.title).to.eql('QA Updated Title');",
+                  "});",
+                  "",
+                  "pm.test('Simulated update does not change stored productId', function () {",
+                  "    pm.expect(pm.environment.get('productId')).to.eql(previousProductId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"QA Updated Title\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Simulates updating an existing product title. Does not assert persistence via a follow-up GET."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Product - Existing Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousProductId = pm.environment.get('productId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const deletedProductSchema = {",
+                  "    type: 'object',",
+                  "    required: ['id', 'isDeleted', 'deletedOn'],",
+                  "    properties: {",
+                  "        id: { type: 'number' },",
+                  "        isDeleted: { type: 'boolean' },",
+                  "        deletedOn: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Product delete simulation completes successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Delete response marks the product as deleted', function () {",
+                  "    pm.response.to.have.jsonSchema(deletedProductSchema);",
+                  "    pm.expect(String(response.id)).to.eql(previousProductId);",
+                  "    pm.expect(response.isDeleted).to.eql(true);",
+                  "});",
+                  "",
+                  "pm.test('Simulated delete does not change stored productId', function () {",
+                  "    pm.expect(pm.environment.get('productId')).to.eql(previousProductId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Simulates deleting an existing product. Asserts delete flags in the response only; does not expect a subsequent GET 404."
           },
           "response": []
         }

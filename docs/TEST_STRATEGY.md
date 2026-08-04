@@ -57,7 +57,11 @@ Define how API quality will be validated for the DummyJSON public API using Post
 | Positive | Valid inputs and authorized flows return the expected status and critical response fields |
 | Negative | Invalid credentials, missing/invalid auth, not-found, and basic validation failures |
 | Contract (lightweight) | Presence and type of critical fields; avoid brittle full-schema locks unless justified |
-| Chaining | Login → store token → call protected/dependent resources |
+| Chaining | Runtime values from successful responses drive dependent requests |
+
+**Authentication:** Login → `accessToken` → protected requests
+
+**Products:** Default List → `productId` → Existing Id → Update → Delete
 
 ## 7. Quality standard
 
@@ -91,7 +95,7 @@ docs/
   TEST_STRATEGY.md # This document
 ```
 
-Planned collection coverage (see implementation sequence):
+Implemented collection coverage (see implementation sequence):
 
 1. Authentication
 2. Products (Read)
@@ -137,3 +141,7 @@ Planned collection coverage (see implementation sequence):
 DummyJSON is a public demo API. Some responses reflect its current implementation rather than ideal REST conventions. This suite validates that documented/observed behavior.
 
 Example: `GET Current User - Invalid Token` currently returns HTTP `500` with message `invalid token`. Assertions follow that contract instead of enforcing a theoretical `401`.
+
+`GET Product - Nonexistent Id` currently returns HTTP `404` with a `not found` message. Assertions intentionally follow the observed API contract.
+
+Product write operations (`POST`, `PUT`, and `DELETE`) are simulated and do not persist server-side. The suite validates the write response contract only and does not use follow-up `GET` requests to verify persistence.
