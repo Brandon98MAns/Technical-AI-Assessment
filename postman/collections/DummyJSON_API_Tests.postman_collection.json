@@ -28,6 +28,17 @@
   "item": [
     {
       "name": "01 - Authentication",
+      "description": "Authentication flows for DummyJSON. Token refresh scenarios are out of scope.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      },
       "item": [
         {
           "name": "POST Login - Valid Credentials",
@@ -121,9 +132,413 @@
             "description": "Authenticates with demo credentials and persists accessToken, refreshToken, and authUserId only when login succeeds."
           },
           "response": []
+        },
+        {
+          "name": "GET Current User - Valid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "const currentUserSchema = {",
+                  "    type: 'object',",
+                  "    required: ['id', 'username', 'email', 'firstName', 'lastName'],",
+                  "    properties: {",
+                  "        id: { type: 'number' },",
+                  "        username: { type: 'string', minLength: 1 },",
+                  "        email: { type: 'string', minLength: 1 },",
+                  "        firstName: { type: 'string', minLength: 1 },",
+                  "        lastName: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Authenticated user profile is returned', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Current user payload matches the expected profile contract', function () {",
+                  "    pm.response.to.have.jsonSchema(currentUserSchema);",
+                  "});",
+                  "",
+                  "pm.test('Returned user matches the authenticated session', function () {",
+                  "    pm.expect(String(response.id)).to.eql(pm.environment.get('authUserId'));",
+                  "    pm.expect(response.username).to.eql(pm.environment.get('authUsername'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Retrieves the current user using the Bearer token stored after successful login."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Login - Invalid Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousAccessToken = pm.environment.get('accessToken');",
+                  "const previousRefreshToken = pm.environment.get('refreshToken');",
+                  "const previousAuthUserId = pm.environment.get('authUserId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const errorSchema = {",
+                  "    type: 'object',",
+                  "    required: ['message'],",
+                  "    properties: {",
+                  "        message: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Login is rejected for an incorrect password', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Error response explains invalid credentials', function () {",
+                  "    pm.response.to.have.jsonSchema(errorSchema);",
+                  "    pm.expect(response.message).to.eql('Invalid credentials');",
+                  "});",
+                  "",
+                  "pm.test('Failed login does not change stored session data', function () {",
+                  "    pm.expect(pm.environment.get('accessToken')).to.eql(previousAccessToken);",
+                  "    pm.expect(pm.environment.get('refreshToken')).to.eql(previousRefreshToken);",
+                  "    pm.expect(pm.environment.get('authUserId')).to.eql(previousAuthUserId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{authUsername}}\",\n  \"password\": \"incorrect-password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Attempts login with a valid username and an incorrect password. Must not overwrite environment session variables."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Login - Missing Username",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousAccessToken = pm.environment.get('accessToken');",
+                  "const previousRefreshToken = pm.environment.get('refreshToken');",
+                  "const previousAuthUserId = pm.environment.get('authUserId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const errorSchema = {",
+                  "    type: 'object',",
+                  "    required: ['message'],",
+                  "    properties: {",
+                  "        message: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Login is rejected when username is missing', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Error response requires username and password', function () {",
+                  "    pm.response.to.have.jsonSchema(errorSchema);",
+                  "    pm.expect(response.message).to.eql('Username and password required');",
+                  "});",
+                  "",
+                  "pm.test('Failed login does not change stored session data', function () {",
+                  "    pm.expect(pm.environment.get('accessToken')).to.eql(previousAccessToken);",
+                  "    pm.expect(pm.environment.get('refreshToken')).to.eql(previousRefreshToken);",
+                  "    pm.expect(pm.environment.get('authUserId')).to.eql(previousAuthUserId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{authPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Attempts login without a username. Must not overwrite environment session variables."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Login - Missing Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousAccessToken = pm.environment.get('accessToken');",
+                  "const previousRefreshToken = pm.environment.get('refreshToken');",
+                  "const previousAuthUserId = pm.environment.get('authUserId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const errorSchema = {",
+                  "    type: 'object',",
+                  "    required: ['message'],",
+                  "    properties: {",
+                  "        message: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Login is rejected when password is missing', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Error response requires username and password', function () {",
+                  "    pm.response.to.have.jsonSchema(errorSchema);",
+                  "    pm.expect(response.message).to.eql('Username and password required');",
+                  "});",
+                  "",
+                  "pm.test('Failed login does not change stored session data', function () {",
+                  "    pm.expect(pm.environment.get('accessToken')).to.eql(previousAccessToken);",
+                  "    pm.expect(pm.environment.get('refreshToken')).to.eql(previousRefreshToken);",
+                  "    pm.expect(pm.environment.get('authUserId')).to.eql(previousAuthUserId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{authUsername}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Attempts login without a password. Must not overwrite environment session variables."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Current User - Missing Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousAccessToken = pm.environment.get('accessToken');",
+                  "const previousRefreshToken = pm.environment.get('refreshToken');",
+                  "const previousAuthUserId = pm.environment.get('authUserId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const errorSchema = {",
+                  "    type: 'object',",
+                  "    required: ['message'],",
+                  "    properties: {",
+                  "        message: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Current user is denied without an access token', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Error response requires an access token', function () {",
+                  "    pm.response.to.have.jsonSchema(errorSchema);",
+                  "    pm.expect(response.message).to.eql('Access Token is required');",
+                  "});",
+                  "",
+                  "pm.test('Unauthorized request does not change stored session data', function () {",
+                  "    pm.expect(pm.environment.get('accessToken')).to.eql(previousAccessToken);",
+                  "    pm.expect(pm.environment.get('refreshToken')).to.eql(previousRefreshToken);",
+                  "    pm.expect(pm.environment.get('authUserId')).to.eql(previousAuthUserId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Calls /auth/me without an Authorization header."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Current User - Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousAccessToken = pm.environment.get('accessToken');",
+                  "const previousRefreshToken = pm.environment.get('refreshToken');",
+                  "const previousAuthUserId = pm.environment.get('authUserId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const errorSchema = {",
+                  "    type: 'object',",
+                  "    required: ['message'],",
+                  "    properties: {",
+                  "        message: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Current user is denied for an invalid access token', function () {",
+                  "    pm.response.to.have.status(500);",
+                  "});",
+                  "",
+                  "pm.test('Error response reports an invalid token', function () {",
+                  "    pm.response.to.have.jsonSchema(errorSchema);",
+                  "    pm.expect(response.message).to.eql('invalid token');",
+                  "});",
+                  "",
+                  "pm.test('Unauthorized request does not change stored session data', function () {",
+                  "    pm.expect(pm.environment.get('accessToken')).to.eql(previousAccessToken);",
+                  "    pm.expect(pm.environment.get('refreshToken')).to.eql(previousRefreshToken);",
+                  "    pm.expect(pm.environment.get('authUserId')).to.eql(previousAuthUserId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "invalid.token.value",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Calls /auth/me with a malformed Bearer token. Asserts DummyJSON's current error contract (HTTP 500)."
+          },
+          "response": []
         }
-      ],
-      "description": "Authentication flows for DummyJSON. Token refresh scenarios are out of scope."
+      ]
     }
   ]
 }

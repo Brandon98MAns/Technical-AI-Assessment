@@ -1,0 +1,167 @@
+# AI Collaboration Log
+
+This document records how AI was used throughout the assessment.
+
+The objective was not to generate the solution automatically, but to accelerate repetitive tasks while keeping all architectural and testing decisions under human review.
+
+================================================================================
+
+## Prompt 1
+
+Objective
+
+Define the initial architecture of the project before implementation.
+
+Prompt
+
+Design a maintainable Postman project structure for the DummyJSON API assessment.
+
+Focus on repository organization, scalability, documentation and reviewer readability.
+
+Do not generate implementation yet.
+
+Outcome
+
+- Proposed repository structure
+- Proposed Postman asset organization
+- Deferred implementation until architecture approval
+
+================================================================================
+
+## Prompt 2
+
+Objective
+
+Create the approved project structure.
+
+Prompt
+
+Create the agreed folder structure.
+
+Generate only the project skeleton and the initial TEST_STRATEGY.md document.
+
+Do not generate requests or collections yet.
+
+Outcome
+
+- Created docs/
+- Created postman/
+- Created TEST_STRATEGY.md
+
+================================================================================
+
+## Prompt 3
+
+Objective
+
+Design the Postman collection architecture.
+
+Prompt
+
+Before implementing Authentication, propose:
+
+- Collection folder structure
+- Environment variables
+- Runtime variables
+- Script placement
+- Naming conventions
+- Authentication flow
+
+Do not implement requests yet.
+
+Outcome
+
+- Defined collection architecture
+- Defined environment variables
+- Defined authentication flow
+- Defined naming conventions
+- Defined script organization
+
+================================================================================
+
+## Prompt 4
+
+Objective
+
+Implement the first authentication scenario.
+
+Prompt
+
+Implement only:
+
+POST Login - Valid Credentials
+
+Requirements:
+
+- Environment-driven configuration
+- Store runtime variables only after successful authentication
+- Reuse collection-level validations
+- Follow the previously approved quality standard
+
+Do not implement any additional scenarios.
+
+Outcome
+
+- Created Postman Collection
+- Created Local Environment
+- Implemented Login Happy Path
+- Added reusable collection-level validations
+
+================================================================================
+
+## Prompt 5
+
+Objective
+
+Review and refine the authentication implementation.
+
+Prompt
+
+Perform a Senior QA pull request review.
+
+Improve maintainability by:
+
+- Removing redundant assertions
+- Separating environment persistence from assertions
+- Improving test naming
+- Keeping implementation concise
+
+Do not introduce new scenarios.
+
+Outcome
+
+- Simplified assertions
+- Improved maintainability
+- Moved environment persistence outside test assertions
+- Tightened JSON schema validation
+
+================================================================================
+
+## Prompt 6
+
+Objective
+
+Complete the Authentication module.
+
+Prompt
+
+Implement:
+
+- POST Login - Invalid Password
+- POST Login - Missing Username
+- POST Login - Missing Password
+- GET Current User - Valid Token
+- GET Current User - Missing Token
+- GET Current User - Invalid Token
+
+Reuse the existing architecture and quality standards.
+
+Treat this implementation as a single Pull Request.
+
+Outcome
+
+- Completed the Authentication module.
+- Implemented authenticated user validation.
+- Added authentication negative scenarios.
+- Ensured failed authentication never overwrites session variables.
+- Reused folder-level Bearer authentication for protected endpoints.

@@ -133,3 +133,9 @@ Planned collection coverage (see implementation sequence):
 3. Search & Filtering
 4. Error Handling
 5. Documentation
+
+## 13. Known API Behaviors
+
+DummyJSON is a public demo API. Some responses reflect its current implementation rather than ideal REST conventions. This suite validates that documented/observed behavior.
+
+Example: `GET Current User - Invalid Token` currently returns HTTP `500` with message `invalid token`. Assertions follow that contract instead of enforcing a theoretical `401`.

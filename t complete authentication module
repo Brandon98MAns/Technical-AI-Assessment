@@ -1,0 +1,213 @@
+[1mdiff --git a/.cursor/prompts.txt b/.cursor/prompts.txt[m
+[1mindex e69de29..a4c5abf 100644[m
+[1m--- a/.cursor/prompts.txt[m
+[1m+++ b/.cursor/prompts.txt[m
+[36m@@ -0,0 +1,167 @@[m
+[32m+[m[32m# AI Collaboration Log[m
+[32m+[m
+[32m+[m[32mThis document records how AI was used throughout the assessment.[m
+[32m+[m
+[32m+[m[32mThe objective was not to generate the solution automatically, but to accelerate repetitive tasks while keeping all architectural and testing decisions under human review.[m
+[32m+[m
+[32m+[m[32m================================================================================[m
+[32m+[m
+[32m+[m[32m## Prompt 1[m
+[32m+[m
+[32m+[m[32mObjective[m
+[32m+[m
+[32m+[m[32mDefine the initial architecture of the project before implementation.[m
+[32m+[m
+[32m+[m[32mPrompt[m
+[32m+[m
+[32m+[m[32mDesign a maintainable Postman project structure for the DummyJSON API assessment.[m
+[32m+[m
+[32m+[m[32mFocus on repository organization, scalability, documentation and reviewer readability.[m
+[32m+[m
+[32m+[m[32mDo not generate implementation yet.[m
+[32m+[m
+[32m+[m[32mOutcome[m
+[32m+[m
+[32m+[m[32m- Proposed repository structure[m
+[32m+[m[32m- Proposed Postman asset organization[m
+[32m+[m[32m- Deferred implementation until architecture approval[m
+[32m+[m
+[32m+[m[32m================================================================================[m
+[32m+[m
+[32m+[m[32m## Prompt 2[m
+[32m+[m
+[32m+[m[32mObjective[m
+[32m+[m
+[32m+[m[32mCreate the approved project structure.[m
+[32m+[m
+[32m+[m[32mPrompt[m
+[32m+[m
+[32m+[m[32mCreate the agreed folder structure.[m
+[32m+[m
+[32m+[m[32mGenerate only the project skeleton and the initial TEST_STRATEGY.md document.[m
+[32m+[m
+[32m+[m[32mDo not generate requests or collections yet.[m
+[32m+[m
+[32m+[m[32mOutcome[m
+[32m+[m
+[32m+[m[32m- Created docs/[m
+[32m+[m[32m- Created postman/[m
+[32m+[m[32m- Created TEST_STRATEGY.md[m
+[32m+[m
+[32m+[m[32m================================================================================[m
+[32m+[m
+[32m+[m[32m## Prompt 3[m
+[32m+[m
+[32m+[m[32mObjective[m
+[32m+[m
+[32m+[m[32mDesign the Postman collection architecture.[m
+[32m+[m
+[32m+[m[32mPrompt[m
+[32m+[m
+[32m+[m[32mBefore implementing Authentication, propose:[m
+[32m+[m
+[32m+[m[32m- Collection folder structure[m
+[32m+[m[32m- Environment variables[m
+[32m+[m[32m- Runtime variables[m
+[32m+[m[32m- Script placement[m
+[32m+[m[32m- Naming conventions[m
+[32m+[m[32m- Authentication flow[m
+[32m+[m
+[32m+[m[32mDo not implement requests yet.[m
+[32m+[m
+[32m+[m[32mOutcome[m
+[32m+[m
+[32m+[m[32m- Defined collection architecture[m
+[32m+[m[32m- Defined environment variables[m
+[32m+[m[32m- Defined authentication flow[m
+[32m+[m[32m- Defined naming conventions[m
+[32m+[m[32m- Defined script organization[m
+[32m+[m
+[32m+[m[32m================================================================================[m
+[32m+[m
+[32m+[m[32m## Prompt 4[m
+[32m+[m
+[32m+[m[32mObjective[m
+[32m+[m
+[32m+[m[32mImplement the first authentication scenario.[m
+[32m+[m
+[32m+[m[32mPrompt[m
+[32m+[m
+[32m+[m[32mImplement only:[m
+[32m+[m
+[32m+[m[32mPOST Login - Valid Credentials[m
+[32m+[m
+[32m+[m[32mRequirements:[m
+[32m+[m
+[32m+[m[32m- Environment-driven configuration[m
+[32m+[m[32m- Store runtime variables only after successful authentication[m
+[32m+[m[32m- Reuse collection-level validations[m
+[32m+[m[32m- Follow the previously approved quality standard[m
+[32m+[m
+[32m+[m[32mDo not implement any additional scenarios.[m
+[32m+[m
+[32m+[m[32mOutcome[m
+[32m+[m
+[32m+[m[32m- Created Postman Collection[m
+[32m+[m[32m- Created Local Environment[m
+[32m+[m[32m- Implemented Login Happy Path[m
+[32m+[m[32m- Added reusable collection-level validations[m
+[32m+[m
+[32m+[m[32m================================================================================[m
+[32m+[m
+[32m+[m[32m## Prompt 5[m
+[32m+[m
+[32m+[m[32mObjective[m
+[32m+[m
+[32m+[m[32mReview and refine the authentication implementation.[m
+[32m+[m
+[32m+[m[32mPrompt[m
+[32m+[m
+[32m+[m[32mPerform a Senior QA pull request review.[m
+[32m+[m
+[32m+[m[32mImprove maintainability by:[m
+[32m+[m
+[32m+[m[32m- Removing redundant assertions[m
+[32m+[m[32m- Separating environment persistence from assertions[m
+[32m+[m[32m- Improving test naming[m
+[32m+[m[32m- Keeping implementation concise[m
+[32m+[m
+[32m+[m[32mDo not introduce new scenarios.[m
+[32m+[m
+[32m+[m[32mOutcome[m
+[32m+[m
+[32m+[m[32m- Simplified assertions[m
+[32m+[m[32m- Improved maintainability[m
+[32m+[m[32m- Moved environment persistence outside test assertions[m
+[32m+[m[32m- Tightened JSON schema validation[m
+[32m+[m
+[32m+[m[32m================================================================================[m
+[32m+[m
+[32m+[m[32m## Prompt 6[m
+[32m+[m
+[32m+[m[32mObjective[m
+[32m+[m
+[32m+[m[32mComplete the Authentication module.[m
+[32m+[m
+[32m+[m[32mPrompt[m
+[32m+[m
+[32m+[m[32mImplement:[m
+[32m+[m
+[32m+[m[32m- POST Login - Invalid Password[m
+[32m+[m[32m- POST Login - Missing Username[m
+[32m+[m[32m- POST Login - Missing Password[m
+[32m+[m[32m- GET Current User - Valid Token[m
+[32m+[m[32m- GET Current User - Missing Token[m
+[32m+[m[32m- GET Current User - Invalid Token[m
+[32m+[m
+[32m+[m[32mReuse the existing architecture and quality standards.[m
+[32m+[m
+[32m+[m[32mTreat this implementation as a single Pull Request.[m
+[32m+[m
+[32m+[m[32mOutcome[m
+[32m+[m
+[32m+[m[32m- Completed the Authentication module.[m
+[32m+[m[32m- Implemented authenticated user validation.[m
+[32m+[m[32m- Added authentication negative scenarios.[m
+[32m+[m[32m- Ensured failed authentication never overwrites session variables.[m
+[32m+[m[32m- Reused folder-level Bearer authentication for protected endpoints.[m
+\ No newline at end of file[m
+[1mdiff --git a/docs/TEST_STRATEGY.md b/docs/TEST_STRATEGY.md[m
+[1mindex a7fa88c..0c3fd93 100644[m
+[1m--- a/docs/TEST_STRATEGY.md[m
+[1m+++ b/docs/TEST_STRATEGY.md[m
+[36m@@ -133,3 +133,9 @@[m [mPlanned collection coverage (see implementation sequence):[m
+ 3. Search & Filtering[m
+ 4. Error Handling[m
+ 5. Documentation[m
+[32m+[m
+[32m+[m[32m## 13. Known API Behaviors[m
+[32m+[m
+[32m+[m[32mDummyJSON is a public demo API. Some responses reflect its current implementation rather than ideal REST conventions. This suite validates that documented/observed behavior.[m
+[32m+[m
+[32m+[m[32mExample: `GET Current User - Invalid Token` currently returns HTTP `500` with message `invalid token`. Assertions follow that contract instead of enforcing a theoretical `401`.[m
+[1mdiff --git a/postman/collections/DummyJSON_API_Tests.postman_collection.json b/postman/collections/DummyJSON_API_Tests.postman_collection.json[m
+[1mindex ad3f43e..6bff09e 100644[m
+[1m--- a/postman/collections/DummyJSON_API_Tests.postman_collection.json[m
+[1m+++ b/postman/collections/DummyJSON_API_Tests.postman_collection.json[m
+[36m@@ -28,6 +28,17 @@[m
+   "item": [[m
+     {[m
+       "name": "01 - Authentication",[m
+[32m+[m[32m      "description": "Authentication flows for DummyJSON. Token refresh scenarios are out of scope.",[m
+[32m+[m[32m      "auth": {[m
+[32m+[m[32m        "type": "bearer",[m
+[32m+[m[32m        "bearer": [[m
+[32m+[m[32m          {[m
+[32m+[m[32m            "key": "token",[m
+[32m+[m[32m            "value": "{{accessToken}}",[m
+[32m+[m[32m            "type": "string"[m
+[32m+[m[32m          }[m
+[32m+[m[32m        ][m
+[32m+[m[32m      },[m
+       "item": [[m
+         {[m
+           "name": "POST Login - Valid Credentials",[m
+[36m@@ -121,9 +132,413 @@[m
+             "description": "Authenticates with demo credentials and persists accessToken, refreshToken, and authUserId only when login succeeds."[m
+           },[m
+           "response": []
