@@ -18,7 +18,7 @@ Define how API quality will be validated for the DummyJSON public API using Post
 - Automated API tests in Postman for selected DummyJSON resources
 - Positive and priority negative scenarios
 - Authentication flow and authorized request reuse
-- Products CRUD, search & filtering, and structured error-handling coverage
+- Products as a single resource module (read scenarios, then simulated write scenarios)
 - Environment-driven configuration (base URL, tokens, shared IDs)
 - Reusable collection/folder-level scripts to reduce assertion duplication
 
@@ -94,9 +94,8 @@ docs/
 Planned collection coverage (see implementation sequence):
 
 1. Authentication
-2. Products CRUD
-3. Search & Filtering
-4. Error Handling
+2. Products (Read)
+3. Products (Write)
 
 ## 9. Environments and data
 
@@ -129,10 +128,9 @@ Planned collection coverage (see implementation sequence):
 ## 12. Implementation sequence
 
 1. Authentication
-2. Products CRUD
-3. Search & Filtering
-4. Error Handling
-5. Documentation
+2. Products (Read)
+3. Products (Write)
+4. Documentation
 
 ## 13. Known API Behaviors
 

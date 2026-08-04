@@ -539,6 +539,244 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "02 - Products",
+      "description": "Products read scenarios (PR 1). No authentication required. Write scenarios are out of scope for this PR.",
+      "item": [
+        {
+          "name": "GET Products - Default List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "const productListSchema = {",
+                  "    type: 'object',",
+                  "    required: ['products', 'total', 'skip', 'limit'],",
+                  "    properties: {",
+                  "        products: { type: 'array', minItems: 1 },",
+                  "        total: { type: 'number' },",
+                  "        skip: { type: 'number' },",
+                  "        limit: { type: 'number' }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Product catalog is returned successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Product list matches the expected collection contract', function () {",
+                  "    pm.response.to.have.jsonSchema(productListSchema);",
+                  "",
+                  "    const firstProduct = response.products[0];",
+                  "    pm.expect(firstProduct.id).to.be.a('number');",
+                  "    pm.expect(firstProduct.title).to.be.a('string').and.not.empty;",
+                  "    pm.expect(firstProduct.price).to.be.a('number');",
+                  "    pm.expect(firstProduct.category).to.be.a('string').and.not.empty;",
+                  "});",
+                  "",
+                  "if (",
+                  "    pm.response.code === 200 &&",
+                  "    Array.isArray(response.products) &&",
+                  "    response.products.length > 0 &&",
+                  "    typeof response.products[0].id === 'number'",
+                  ") {",
+                  "    pm.environment.set('productId', String(response.products[0].id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "description": "Returns the default product list and stores productId from the first item only when the response is successful."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Product - Existing Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "const productSchema = {",
+                  "    type: 'object',",
+                  "    required: ['id', 'title', 'price', 'category'],",
+                  "    properties: {",
+                  "        id: { type: 'number' },",
+                  "        title: { type: 'string', minLength: 1 },",
+                  "        price: { type: 'number' },",
+                  "        category: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Existing product is returned successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Product payload matches the expected resource contract', function () {",
+                  "    pm.response.to.have.jsonSchema(productSchema);",
+                  "});",
+                  "",
+                  "pm.test('Returned product matches the stored productId', function () {",
+                  "    pm.expect(String(response.id)).to.eql(pm.environment.get('productId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Retrieves a single product using productId stored from the default list response."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Products - Search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousProductId = pm.environment.get('productId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const productListSchema = {",
+                  "    type: 'object',",
+                  "    required: ['products', 'total', 'skip', 'limit'],",
+                  "    properties: {",
+                  "        products: { type: 'array' },",
+                  "        total: { type: 'number' },",
+                  "        skip: { type: 'number' },",
+                  "        limit: { type: 'number' }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Product search completes successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Search response matches the product list contract', function () {",
+                  "    pm.response.to.have.jsonSchema(productListSchema);",
+                  "});",
+                  "",
+                  "pm.test('Search does not change stored productId', function () {",
+                  "    pm.expect(pm.environment.get('productId')).to.eql(previousProductId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/search?q={{productSearchQuery}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{productSearchQuery}}"
+                }
+              ]
+            },
+            "description": "Searches products by query. Asserts the list contract only; does not enforce brittle search-relevance matching."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Product - Nonexistent Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const previousProductId = pm.environment.get('productId');",
+                  "const response = pm.response.json();",
+                  "",
+                  "const errorSchema = {",
+                  "    type: 'object',",
+                  "    required: ['message'],",
+                  "    properties: {",
+                  "        message: { type: 'string', minLength: 1 }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "pm.test('Missing product is rejected with not found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Error response reports that the product was not found', function () {",
+                  "    pm.response.to.have.jsonSchema(errorSchema);",
+                  "    pm.expect(response.message).to.include('not found');",
+                  "});",
+                  "",
+                  "pm.test('Failed product lookup does not change stored productId', function () {",
+                  "    pm.expect(pm.environment.get('productId')).to.eql(previousProductId);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{nonexistentProductId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{nonexistentProductId}}"
+              ]
+            },
+            "description": "Requests a product id that does not exist. Must not overwrite productId."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
